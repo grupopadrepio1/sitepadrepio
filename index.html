@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
+
+  <title>Grupo de Estudos Católicos São Padre Pio</title>
+
+  <!-- aplicar preferência de tema antes do render (evitar flash) -->
+  <script>
+    (function(){
+      try{
+        const s = localStorage.getItem('theme');
+        if(s === 'dark') document.documentElement.setAttribute('data-theme','dark');
+        else if(!s && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.setAttribute('data-theme','dark');
+      }catch(e){}
+    })();
+  </script>
+
+  <!-- Tailwind via CDN (corrigido) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/galeria.css">
+</head>
+
+<body class="min-h-screen">
+
+  <!-- Header -->
+  <div id="header-container"></div>
+
+  <main class="pt-28 pb-24">
+
+    <!-- Início -->
+    <section class="page-section active" data-page="inicio" aria-label="Página inicial">
+      <div class="mx-auto max-w-6xl px-6 space-y-12">
+        <div id="inicio-content"></div>
+      </div>
+    </section>
+
+    <!-- Catequese -->
+    <section class="page-section" data-page="catequese" aria-label="Catequese Permanente">
+      <div class="mx-auto max-w-6xl px-6 space-y-10">
+        <div id="catequese-content"></div>
+      </div>
+    </section>
+
+    <!-- Galeria -->
+    <section class="page-section" data-page="galeria" aria-label="Galeria de Fotos">
+      <div class="mx-auto max-w-6xl px-6 space-y-8">
+        <div id="galeria-content"></div>
+      </div>
+    </section>
+
+    <!-- Sobre -->
+    <section class="page-section" data-page="sobre" aria-label="Sobre o grupo">
+      <div class="mx-auto max-w-6xl px-6 space-y-10">
+        <div id="sobre-content"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer (contém o PLAYER) -->
+  <div id="footer-container"></div>
+
+  <!-- Lightbox -->
+  <div id="lightbox-container"></div>
+
+  <!-- Scripts -->
+  <script src="assets/js/gallery.js"></script>
+  <script src="assets/js/theme-toggle.js"></script>
+
+  <script>
+    function initializeApp() {
+
+      /* =========================
+         SPA Navigation
+      ========================== */
+      const sections = document.querySelectorAll('[data-page]');
+      const navLinks = document.querySelectorAll('[data-page-link]');
+      const mobileMenu = document.getElementById('mobile-menu');
+
+      function showPage(page) {
+        sections.forEach(section => {
+          section.classList.toggle('active', section.dataset.page === page);
+        });
+
+        navLinks.forEach(link => {
+          link.classList.toggle(
+            'text-emerald-600',
+            link.dataset.pageLink === page
+          );
+        });
+
+        if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+          mobileMenu.classList.add('hidden');
+        }
+      }
+
+      navLinks.forEach(link => {
+        link.addEventListener('click', () =>
+          showPage(link.dataset.pageLink)
+        );
+      });
+
+      document.querySelectorAll('[data-jump]').forEach(btn => {
+        btn.addEventListener('click', () =>
+          showPage(btn.dataset.jump)
+        );
+      });
+
+      /* =========================
+         Mobile Menu
+      ========================== */
+      const mobileToggle = document.getElementById('mobile-toggle');
+      if (mobileToggle && mobileMenu) {
+        mobileToggle.addEventListener('click', () => {
+          mobileMenu.classList.toggle('hidden');
+        });
+      }
+
+      /* =========================
+         Slider (Hero)
+      ========================== */
+      const slides = document.querySelectorAll('.hero-slide');
+      if (slides.length > 0) {
+        let currentSlide = 0;
+        setInterval(() => {
+          slides[currentSlide].classList.remove('active');
+          currentSlide = (currentSlide + 1) % slides.length;
+          slides[currentSlide].classList.add('active');
+        }, 5000);
+      }
+    }
+
+    /* =========================
+       Carregamento dos Includes
+    ========================== */
+    document.addEventListener('DOMContentLoaded', () => {
+      Promise.all([
+        fetch('includes/header.html').then(r => r.text()),
+        fetch('includes/footer.html').then(r => r.text()),
+        fetch('includes/lightbox.html').then(r => r.text()),
+        fetch('pages/inicio.html').then(r => r.text()),
+        fetch('pages/catequese.html').then(r => r.text()),
+        fetch('pages/galeria.html').then(r => r.text()),
+        fetch('pages/sobre.html').then(r => r.text())
+      ])
+      .then(([
+        headerData,
+        footerData,
+        lightboxData,
+        inicioData,
+        catequeseData,
+        galeriaData,
+        sobreData
+      ]) => {
+
+        document.getElementById('header-container').innerHTML = headerData;
+        document.getElementById('footer-container').innerHTML = footerData;
+        document.getElementById('lightbox-container').innerHTML = lightboxData;
+
+        document.getElementById('inicio-content').innerHTML = inicioData;
+        document.getElementById('catequese-content').innerHTML = catequeseData;
+        document.getElementById('galeria-content').innerHTML = galeriaData;
+        document.getElementById('sobre-content').innerHTML = sobreData;
+
+        initializeApp();
+        initGallery();
+
+        /* Ajustes pós-injeção: aplicar loading=lazy em imagens injetadas */
+        document.querySelectorAll('#inicio-content img, #catequese-content img, #galeria-content img, #sobre-content img')
+          .forEach(img => { if (!img.loading) img.loading = 'lazy'; });
+
+        /* 🔊 PLAYER (depois do footer existir) */
+        const script = document.createElement("script");
+        script.src = "assets/js/music-player.js";
+        document.body.appendChild(script);
+        
+  /* Script da Catequese (modal de encontros) */
+  const cateScript = document.createElement('script');
+  cateScript.src = 'assets/js/catequese.js';
+  document.body.appendChild(cateScript);
+      })
+      .catch(err =>
+        console.error('Erro ao carregar componentes:', err)
+      );
+    });
+  </script>
+
+</body>
+</html>
+
+
+
+
+

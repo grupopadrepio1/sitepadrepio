@@ -1,0 +1,44 @@
+<header class="fixed top-0 inset-x-0 nav-blur z-40">
+  <div class="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
+  <!-- Logo + Nome linkando para a página inicial (SPA) -->
+  <a href="#" data-page-link="inicio" onclick="event.preventDefault()" class="flex items-center gap-3">
+      <img src="assets/img/logopp.png" alt="Logomarca do Grupo Padre Pio" class="w-20 h-20 rounded-2xl object-contain bg-white p-1">
+      <div>
+        <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Grupo de Estudos Católicos</p>
+        <p class="font-semibold text-slate-900">Padre Pio</p>
+      </div>
+    </a>
+
+    <nav class="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-600">
+      <button class="hover:text-emerald-600 transition" data-page-link="inicio">Início</button>
+      <button class="hover:text-emerald-600 transition" data-page-link="catequese">Catequese</button>
+      <button class="hover:text-emerald-600 transition" data-page-link="galeria">Galeria</button>
+      <button class="hover:text-emerald-600 transition" data-page-link="sobre">Sobre</button>
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <button id="theme-toggle" class="hidden md:inline-flex items-center justify-center p-2 rounded" aria-label="Alternar tema" title="Alternar tema">
+        <!-- ícone atualizado via JS -->
+        <svg id="theme-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6 text-slate-700"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.36-6.36-.7.7M6.34 17.66l-.7.7m12.02 0l-.7-.7M6.34 6.34l-.7-.7M12 5a7 7 0 100 14 7 7 0 000-14z"/></svg>
+      </button>
+
+      <button class="md:hidden" id="mobile-toggle" aria-label="Abrir menu">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6h16.5M3.75 12h16.5M3.75 18h16.5" />
+      </svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="mobile-menu" class="md:hidden hidden border-t border-slate-200">
+    <nav class="px-6 py-4 flex flex-col gap-3 text-sm font-semibold text-slate-700">
+      <button class="text-left" data-page-link="inicio">Início</button>
+      <button class="text-left" data-page-link="catequese">Catequese</button>
+      <button class="text-left" data-page-link="galeria">Galeria</button>
+      <button class="text-left" data-page-link="sobre">Sobre</button>
+      <div class="pt-3 border-t border-slate-200">
+        <button id="theme-toggle-mobile" class="w-full text-left p-2">Alternar tema</button>
+      </div>
+    </nav>
+  </div>
+</header>

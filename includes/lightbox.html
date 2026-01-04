@@ -1,0 +1,33 @@
+<div id="album-modal" class="fixed inset-0 z-50 hidden bg-black/80 flex items-start justify-center pt-24 md:pt-4 pb-8 px-4" role="dialog" aria-modal="true" aria-label="Visualizador de imagens">
+  <div class="relative w-full max-w-6xl bg-transparent">
+  <button id="close-modal" class="absolute top-12 md:top-4 right-3 text-white text-3xl p-2" aria-label="Fechar">&times;</button>
+
+  <div class="bg-transparent rounded-lg max-h-[calc(100vh-4rem)] overflow-visible">
+  <header class="px-4 py-3 mt-10 md:mt-2 bg-black/60 text-white flex items-center justify-between rounded-t-md">
+        <div>
+          <h2 id="album-title" class="text-lg font-semibold">Álbum</h2>
+          <p id="album-description" class="text-sm text-slate-200 opacity-80">Descrição</p>
+        </div>
+        <div class="flex gap-3 items-center">
+          <button id="fullscreen-btn" class="text-white p-2" aria-label="Alternar tela cheia">⤢</button>
+          <button id="prev-photo" class="text-white p-2" aria-label="Foto anterior">‹</button>
+          <button id="next-photo" class="text-white p-2" aria-label="Próxima foto">›</button>
+        </div>
+      </header>
+
+      <div class="p-4 bg-black/40 rounded-b-lg">
+        <div class="w-full flex flex-col gap-4 items-center">
+            <div class="w-full flex justify-center items-center">
+            <img id="main-photo" src="" alt="" class="max-h-[60vh] md:max-h-[60vh] object-contain rounded shadow-lg" tabindex="-1" />
+          </div>
+
+          <!-- Legenda/descrição do álbum -->
+          <p id="album-caption" class="text-sm text-slate-200 text-center md:text-left w-full">Legenda ou informação adicional.</p>
+
+          <!-- Miniaturas: apenas exibidas em desktop (md+) -->
+          <div id="thumbs" class="hidden md:flex gap-2 overflow-x-auto py-1 px-1 w-full justify-center mb-2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

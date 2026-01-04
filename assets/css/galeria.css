@@ -1,0 +1,158 @@
+/* Estilos simples para a galeria (versão restaurada) */
+
+/* Grid de álbuns */
+.albums-grid {
+  display: grid;
+  /* aumentar um pouco o min-width para capas maiores */
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem; /* 20px */
+  /* separar do header / topo da página — reduzir um pouco para aproximar as capas */
+  margin-top: 1.5rem;
+}
+
+/* Desktop: forçar 6 colunas e capas um pouco mais altas para apresentação */
+@media (min-width: 1024px) {
+  .albums-grid {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1rem;
+  }
+
+  /* capas ligeiramente mais altas para melhor presença visual */
+  .album-card .cover {
+    aspect-ratio: 3 / 2; /* um pouco mais alto que 4/3 */
+  }
+}
+
+.album-card {
+  display: block;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.28s ease, box-shadow 0.28s ease;
+  cursor: pointer;
+  background: white;
+}
+.album-card:hover { transform: translateY(-6px) scale(1.01); box-shadow: 0 18px 40px rgba(2,6,23,0.08); }
+
+/* melhor separação visual e foco */
+.album-card { border: 1px solid rgba(2,6,23,0.03); }
+.album-card:focus { box-shadow: 0 8px 30px rgba(16,185,129,0.08); transform: translateY(-4px); }
+
+/* Cover wrapper using aspect-ratio for consistent presentation */
+.album-card .cover {
+  width: 100%;
+  aspect-ratio: 4 / 3; /* imagem mais quadrada e apresentável para capas */
+  background: linear-gradient(180deg,#efefef,#e9e9e9);
+  display: block;
+  position: relative;
+  overflow: hidden;
+}
+.album-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; display:block; transition: transform 0.6s cubic-bezier(.2,.9,.2,1); }
+.album-card:hover img { transform: scale(1.06); }
+
+/* overlay gradient (leve) */
+.album-card .cover > .absolute:first-of-type { pointer-events: none; transition: opacity 0.28s ease; opacity: 0.9; }
+.album-card:hover .cover > .absolute:first-of-type { opacity: 1; }
+
+/* título e contagem centralizados com boa leitura */
+.album-card .cover > .absolute:last-of-type {
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: 0.9rem;
+  color: #fff;
+  text-shadow: 0 6px 18px rgba(0,0,0,0.55);
+}
+.album-card .cover > .absolute:last-of-type h3 { margin:0; font-size:1.05rem; line-height:1.2; }
+.album-card .cover > .absolute:last-of-type p { margin:0; font-size:0.85rem; opacity:0.95; }
+.album-card .p-4 { padding-top: 12px; padding-bottom: 16px; }
+
+/* limitar descrição para manter cartões limpos */
+.album-card .p-4 p { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; color: var(--color-muted); line-clamp: 2; }
+
+/* overlay do título sobre a imagem */
+.album-card .absolute { pointer-events: none; }
+
+/* foco acessível */
+.album-card:focus-visible { outline: 3px solid rgba(16,185,129,0.18); outline-offset: 3px; }
+
+
+/* Modal de visualização de fotos */
+#album-modal { animation: fadeIn 0.22s ease-in-out; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+#album-modal.hidden { display: none; }
+
+/* Imagem principal */
+#main-photo {
+  animation: imageZoom 0.32s ease-in-out;
+  max-width: 100%;
+  max-height: 60vh; /* alinhado com includes/lightbox.html */
+  border-radius: 0.75rem;
+  outline: none;
+}
+
+@keyframes imageZoom { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+/* Miniaturas */
+.thumb { border: 2px solid transparent; transition: transform 0.18s ease, border-color 0.18s ease; width:64px; height:64px }
+.thumb:hover { transform: translateY(-4px); opacity: 0.95; border-color: #10b981; }
+.thumb.ring-2 { border-color: #10b981; box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(16,185,129,0.18); }
+
+/* Thumbs: por padrão ocultas em telas pequenas; exibidas em md+ (confere ao uso de classes Tailwind) */
+#thumbs { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; overflow-x: auto; height: 64px; }
+
+/* Ensure each thumbnail keeps its natural size and doesn't shrink when scrolling */
+.thumb { flex: 0 0 auto; width: 56px; height: 56px; }
+
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .album-card img { height: 180px; }
+  #album-modal { padding: 0.75rem; }
+  #main-photo { max-height: 55vh; }
+  #thumbs { display: none !important; }
+}
+
+/* Ajustes finos para os controles do lightbox (fechar / anterior / próximo)
+   Evita que o botão de fechar absoluto se sobreponha aos controles do header.
+   Mantém o layout responsivo e garante espaços suficientes no header. */
+#album-modal header {
+  /* aumentar espaço à direita para não colidir com o botão de fechar absoluto */
+  padding-right: 5.5rem; /* espaço reservado para o X */
+}
+
+#album-modal header .flex > button {
+  /* botões pequenos e consistentes no header (fullscreen, prev, next) */
+  background: rgba(255,255,255,0.04);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.35rem 0.6rem;
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+#close-modal {
+  /* garante que o fechar esteja acima do modal, mas não cubra os controles
+     reduzido levemente para evitar sobreposição visual */
+  z-index: 40;
+  font-size: 1.6rem; /* antes estava text-3xl, diminuir um pouco */
+  padding: 0.35rem 0.6rem;
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 6px;
+}
+
+/* Em telas pequenas, o header costuma ocupar mais espaço — reduzir o padding direito
+   para manter os controles visíveis e evitar overflow */
+@media (max-width: 640px) {
+  #album-modal header { padding-right: 3.25rem; }
+  #close-modal { right: 0.5rem; top: 0.5rem; }
+  #album-modal header .flex > button { padding: 0.25rem 0.45rem; font-size: 0.95rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+

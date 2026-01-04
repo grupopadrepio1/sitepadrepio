@@ -1,0 +1,545 @@
+:root {
+  /* Core design tokens - Light mode */
+  --color-bg: #bec49b; /* Fundo claro (branco) para modo claro, desktop e responsivo */
+  --color-surface: #FFFFFF;
+  --color-border: #E6EEF3;
+  --overlay-alpha: rgba(2,6,23,0.6);
+  --color-primary: #10B981;
+  --color-primary-600: #059669;
+  --color-accent: #C49A3A;
+  --color-text: #0F172A;
+  --color-muted: #475569;
+  --shadow-elev: 0 10px 30px rgba(2,6,23,0.06);
+  color-scheme: light;
+}
+
+/* Dark theme tokens - can be applied via [data-theme="dark"] or prefers-color-scheme */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Fundo e superfícies clareados para melhor legibilidade (menos 'preto absoluto') */
+    --color-bg: #0F1B2B;     /* antes: #0B1220 */
+    --color-surface: #121E2A; /* antes: #0F1724 */
+    --color-border: rgba(255,255,255,0.08);
+    /* overlay levemente mais claro para não 'afundar' o cartão */
+    --overlay-alpha: rgba(2,6,23,0.42);
+    --color-primary: #34D399;
+    --color-primary-600: #10B981;
+    --color-accent: #D4AF37;
+    --color-text: #E6F3EB;
+    --color-muted: #A8B4B9;
+  --shadow-elev: 0 8px 22px rgba(2,6,23,0.28);
+    color-scheme: dark;
+  }
+}
+
+/* Manual override via attribute */
+[data-theme="dark"] {
+  /* Fundo e superfícies clareados para modo escuro menos pesado */
+  --color-bg: #3f6494;
+  --color-surface: #121E2A;
+  --color-border: rgba(255,255,255,0.08);
+  --overlay-alpha: rgba(2,6,23,0.42);
+  --color-primary: #34D399;
+  --color-primary-600: #10B981;
+  --color-accent: #D4AF37;
+  --color-text: #E6F3EB;
+  --color-muted: #A8B4B9;
+  --shadow-elev: 0 8px 22px rgba(2,6,23,0.28);
+  color-scheme: dark;
+}
+
+body {
+  font-family: "Inter", "Noto Sans", "Segoe UI", system-ui, -apple-system,
+    BlinkMacSystemFont, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* Layout spacing tweaks: diminuir distância entre header/slider/content/footer */
+main {
+  /* pt-28 (7rem) -> 5rem ; pb-24 (6rem) -> 2rem (menor distância para o footer) */
+  padding-top: 5rem !important;
+  padding-bottom: 2rem !important;
+}
+
+@media (max-width: 640px) {
+  main { padding-bottom: 1.25rem !important; }
+}
+
+/* Reduzir espaçamento interno do footer para aproximar visualmente dos cards */
+footer > .mx-auto { /* corresponde ao container interno do footer */
+  padding-top: 1.25rem !important; /* antes py-10 (2.5rem) */
+  padding-bottom: 0.75rem !important;
+}
+footer .border-t { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+
+/* Spacer depois do slider (elemento <div class="h-12 md:h-16">) fica menor */
+.hero-slider + .h-12 {
+  height: 0.5rem !important; /* antes: 3rem */
+}
+@media (min-width: 768px) {
+  .hero-slider + .h-12 {
+    height: 0.75rem !important; /* antes md:4rem */
+  }
+}
+
+/* ===============================
+   Navegação
+================================ */
+.nav-blur {
+  backdrop-filter: blur(20px);
+  background-color: color-mix(in srgb, var(--color-surface) 92%, transparent);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* ===============================
+   Hero / Slider
+================================ */
+.hero-slider {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  min-height: 360px;
+  margin-top: 0.5rem; /* pequeno espaçamento em relação ao header */
+}
+
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.hero-slide.active {
+  opacity: 1;
+}
+
+/* Suavizar overlays pesados no modo escuro (evitar sensação de "camada escurecida" cobrindo o site) */
+[data-theme="dark"] .hero-slider > .absolute.inset-0 {
+  /* reduzir intensidade do gradiente que escurece a imagem de fundo */
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--color-surface) 18%, transparent) 0%,
+    color-mix(in srgb, var(--color-surface) 8%, transparent) 40%,
+    transparent 100%) !important;
+}
+
+/* Alvos adicionais: elementos utilitários que geram overlays com opacidade */
+[data-theme="dark"] .bg-gradient-to-r.from-slate-900\/70,
+[data-theme="dark"] .bg-gradient-to-r.from-slate-900\/60,
+[data-theme="dark"] .bg-gradient-to-r.from-slate-900\/50 {
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--color-surface) 18%, transparent) 0%,
+    color-mix(in srgb, var(--color-surface) 8%, transparent) 40%,
+    transparent 100%) !important;
+}
+
+/* ===============================
+   Seções e Cards
+================================ */
+.page-section {
+  display: none;
+  animation: fadeUp 0.6s ease forwards;
+}
+
+.page-section.active {
+  display: block;
+}
+
+.section-card {
+  background: var(--color-surface);
+  border-radius: 20px;
+  box-shadow: var(--shadow-elev);
+}
+
+/* ==========================================
+   Estilos específicos para a página `catequese`
+   Escopo: apenas conteúdo interno (não altera header/footer)
+   ========================================== */
+#catequese-content {
+  display: block;
+}
+
+#catequese-content .section-card {
+  padding: 1.25rem 1.25rem;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--color-surface) 96%, transparent);
+  box-shadow: var(--shadow-elev);
+}
+
+#catequese-content .section-card > .flex > div:first-child h3 {
+  margin-top: 0.15rem;
+}
+
+/* Cards de encontros: aparência mais limpa e consistente */
+#catequese-content .mt-6.space-y-3 {
+  display: grid;
+  gap: 0.75rem;
+}
+
+#catequese-content article {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 0.9rem;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-surface) 98%, transparent);
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+
+#catequese-content article:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(2,6,23,0.06);
+  border-color: color-mix(in srgb, var(--color-primary) 12%, var(--color-border));
+}
+
+/* Layout interno dos encontros em telas médias/maiores */
+@media (min-width: 640px) {
+  #catequese-content article {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+/* Avatar dos ministrantes: aumentar levemente e garantir consistência por escopo */
+#catequese-content .ministrante-foto {
+  width: 5rem; /* 80px - um pouco maior para melhor visibilidade */
+  height: 5rem;
+  border-width: 2px;
+  border-color: var(--color-border);
+}
+
+@media (max-width: 640px) {
+  /* Mobile: fotos um pouco menores, cards centralizados */
+  #catequese-content .ministrante-foto { width: 4.5rem; height: 4.5rem; }
+
+  /* Empilhar/centralizar conteúdo dos cards no mobile */
+  #catequese-content article {
+    align-items: center;
+    text-align: center;
+  }
+
+  /* Garantir que caixas internas fiquem centralizadas */
+  #catequese-content article > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* Data / número do encontro: visual mais discreto */
+/* selector escapes Tailwind-like class with brackets */
+#catequese-content .min-w-\[80px\] {
+  min-width: 64px !important;
+}
+
+/* Títulos e textos com mais espaço (legibilidade) */
+#catequese-content h4,
+#catequese-content h3 {
+  line-height: 1.15;
+}
+
+/* Botões e interatividade: foco visível */
+#catequese-content article:focus-within,
+#catequese-content article:focus {
+  outline: 3px solid color-mix(in srgb, var(--color-primary) 14%, var(--color-bg));
+  outline-offset: 4px;
+}
+
+/* Reduzir o espaçamento entre módulos para um fluxo mais compacto */
+#catequese-content > .space-y-10 { gap: 0.9rem; }
+
+/* Separação visual entre módulos */
+#catequese-content .cate-module { margin-bottom: 1.25rem; }
+#catequese-content .cate-module + .cate-module { margin-top: 1rem; }
+
+
+/* ===============================
+   Animações
+================================ */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===============================
+   Imagens gerais
+================================ */
+header img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ===============================
+   Fotos dos ministrantes
+================================ */
+.ministrante-foto {
+  width: 6rem;             /* 96px */
+  height: 6rem;
+  border-radius: 9999px;   /* totalmente arredondada */
+  object-fit: cover;
+  object-position: center;
+  border: 2px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .ministrante-foto {
+    width: 4.5rem;       /* 72px para mobile */
+    height: 4.5rem;
+  }
+
+  /* reduzir ligeiramente o espaçamento no mobile */
+  .hero-slider { margin-top: 0.25rem; }
+}
+
+
+/* =========================
+   Player Música Sacra
+========================= */
+
+.music-player {
+  width: 100%;
+  background: color-mix(in srgb, var(--color-surface) 92%, var(--color-bg));
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--color-text);
+}
+
+/* Texto: Agora tocando */
+.now-playing {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.now-playing .label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--color-muted);
+}
+
+.now-playing .title {
+  font-size: 0.95rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.now-playing .artist {
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+
+/* Controles */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.controls button {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  padding: 0.35rem 0.6rem;
+  font-size: 0.75rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.controls button:hover {
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  border-color: color-mix(in srgb, var(--color-border) 70%, var(--color-primary));
+}
+
+/* Botão principal */
+#play-btn {
+  font-size: 0.85rem;
+  padding: 0.35rem 0.75rem;
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .music-player {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .controls {
+    justify-content: center;
+  }
+}
+
+/* =========================
+   Modal de Encontro (Catequese)
+   ========================= */
+.encontro-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--overlay-alpha);
+  z-index: 60;
+}
+.encontro-modal.hidden { display: none; }
+.encontro-card {
+  width: 95%;
+  max-width: 900px;
+  background: var(--color-surface);
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: var(--shadow-elev);
+}
+.encontro-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  align-items: start;
+}
+.encontro-photo {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+}
+.encontro-info h3 { margin: 0 0 8px 0; }
+.encontro-meta { color: var(--color-muted); font-size: 0.95rem; margin-bottom: 8px; }
+.encontro-ministrante { font-weight: 600; color: var(--color-text); }
+
+@media (min-width: 768px) {
+  .encontro-grid { grid-template-columns: 1fr 1fr; gap: 22px; }
+  .encontro-photo { height: 100%; max-height: 520px; border-radius: 10px; }
+}
+
+/* Close button */
+.encontro-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* Focus styles for accessibility */
+.encontro-close:focus,
+.encontro-close:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--color-primary) 20%, var(--color-bg));
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
+/* Dark-mode utility overrides for Tailwind-like classes used in the markup.
+   These ensure sufficient contrast when [data-theme="dark"] is active. */
+
+[data-theme="dark"] {
+  color: var(--color-text) !important;
+  background: var(--color-bg) !important;
+}
+
+[data-theme="dark"] .text-slate-900,
+[data-theme="dark"] .text-slate-800,
+[data-theme="dark"] .text-slate-700 {
+  color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .text-slate-600,
+[data-theme="dark"] .text-slate-500 {
+  color: var(--color-muted) !important;
+}
+
+[data-theme="dark"] .text-white,
+[data-theme="dark"] .text-slate-50 {
+  color: var(--color-text) !important;
+}
+
+[data-theme="dark"] .bg-white,
+[data-theme="dark"] .bg-gray-50,
+[data-theme="dark"] .bg-slate-50 {
+  background: var(--color-surface) !important;
+}
+
+/* Mapear bg-slate-100 (badges e chips) para cor de superfície no modo escuro
+   evita fundo claro por cima de elementos escuros com texto claro */
+[data-theme="dark"] .bg-slate-100,
+[data-theme="dark"] .bg-slate-200 {
+  background: color-mix(in srgb, var(--color-surface) 92%, transparent) !important;
+}
+
+[data-theme="dark"] .border-slate-200,
+[data-theme="dark"] .border-slate-300,
+[data-theme="dark"] .border-gray-200 {
+  border-color: var(--color-border) !important;
+}
+
+[data-theme="dark"] header.nav-blur {
+  background-color: color-mix(in srgb, var(--color-surface) 90%, transparent) !important;
+}
+
+[data-theme="dark"] .text-emerald-600 {
+  color: var(--color-primary-600) !important;
+}
+
+[data-theme="dark"] svg[stroke] { stroke: currentColor !important; }
+
+[data-theme="dark"] .hover\:text-emerald-600:hover { color: var(--color-primary-600) !important; }
+
+/* In light mode we want backgrounds that were intentionally dark to align
+  with the site's global beige background. Map common dark utility
+  classes to the light surface so nothing appears with a dark block over
+  beige unless explicitly desired. */
+
+:not([data-theme="dark"]) .bg-slate-900 { background: var(--color-surface) !important; }
+:not([data-theme="dark"]) .text-slate-100 { color: var(--color-text) !important; }
+:not([data-theme="dark"]) .border-slate-800 { border-color: var(--color-border) !important; }
+
+/* Ensure footer (which used bg-slate-900) displays as light surface in light mode */
+:not([data-theme="dark"]) footer.bg-slate-900 { background: var(--color-surface) !important; color: var(--color-text) !important; }
+
+/* Additional mappings to catch other dark utility classes that may appear in templates */
+:not([data-theme="dark"]) .bg-black,
+:not([data-theme="dark"]) .bg-slate-800,
+:not([data-theme="dark"]) .bg-gray-800,
+:not([data-theme="dark"]) .bg-gray-900 {
+  background: var(--color-surface) !important;
+}
+
+:not([data-theme="dark"]) .text-white,
+:not([data-theme="dark"]) .text-slate-50,
+:not([data-theme="dark"]) .text-gray-100 {
+  color: var(--color-text) !important;
+}
+
+:not([data-theme="dark"]) .border-gray-800,
+:not([data-theme="dark"]) .border-slate-700,
+:not([data-theme="dark"]) .border-gray-700 {
+  border-color: var(--color-border) !important;
+}
+
+/* Avoid overriding translucent overlays used intentionally (e.g., bg-black/60); only map fully-opaque utility classes above. */
+
+
